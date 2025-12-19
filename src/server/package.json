@@ -1,0 +1,14 @@
+{
+	"name": "chromix-three-server",
+	"version": "1.0.0",
+	"description": "Developer tool for Chrome control - Server component",
+	"main": "chromix-three-server.js",
+	"author": "Vanco Ordanoski <vordan@infoproject.biz> (Infoproject LLC)",
+	"license": "MIT",
+	"dependencies": {
+		"ws": "^8.18.0"
+	},
+	"engines": {
+		"node": ">=14.0.0"
+	}
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Chromix Three</title>
+	<style>
+		body {
+			width: 350px;
+			padding: 15px;
+			font-family: Arial, sans-serif;
+			font-size: 13px;
+			line-height: 1.5;
+			color: #333;
+		}
+		h1 {
+			font-size: 18px;
+			margin: 0 0 10px 0;
+			color: #1a73e8;
+		}
+		h2 {
+			font-size: 14px;
+			margin: 15px 0 8px 0;
+			color: #555;
+		}
+		p {
+			margin: 8px 0;
+		}
+		.section {
+			margin-bottom: 15px;
+		}
+		.code {
+			background: #f5f5f5;
+			padding: 2px 6px;
+			border-radius: 3px;
+			font-family: monospace;
+			font-size: 12px;
+		}
+		.contact {
+			margin-top: 20px;
+			padding-top: 15px;
+			border-top: 1px solid #ddd;
+			font-size: 12px;
+			color: #666;
+		}
+		a {
+			color: #1a73e8;
+			text-decoration: none;
+		}
+		a:hover {
+			text-decoration: underline;
+		}
+	</style>
+</head>
+<body>
+	<h1>Chromix Three</h1>
+	
+	<div class="section">
+		<p><strong>Version 1.0.1</strong></p>
+		<p>Developer tool for controlling Chrome from the command line.</p>
+	</div>
+
+	<div class="section">
+		<h2>What is this?</h2>
+		<p>This extension connects to a local server and allows you to control Chrome tabs from command-line scripts or editor shortcuts.</p>
+		<p>Primary use case: Reload development server tabs instantly while coding.</p>
+	</div>
+
+	<div class="section">
+		<h2>Requirements</h2>
+		<p>A local Node.js server must be installed and running for this extension to work.</p>
+		<p>The server listens on:</p>
+		<ul style="margin: 5px 0; padding-left: 20px;">
+			<li>HTTP: <span class="code">localhost:8444</span></li>
+			<li>WebSocket: <span class="code">localhost:7444</span></li>
+		</ul>
+	</div>
+
+	<div class="section">
+		<h2>Installation</h2>
+		<p>1. Install the server from the project repository</p>
+		<p>2. Start the server: <span class="code">./server-start.sh</span></p>
+		<p>3. This extension will automatically connect</p>
+	</div>
+
+	<div class="section">
+		<h2>Usage</h2>
+		<p>Use command-line scripts to control Chrome:</p>
+		<ul style="margin: 5px 0; padding-left: 20px;">
+			<li>Reload tabs matching URL pattern</li>
+			<li>List all open tabs</li>
+			<li>Close tabs by URL</li>
+			<li>Open new tabs</li>
+		</ul>
+	</div>
+
+	<div class="contact">
+		<p><strong>Author:</strong> Vanco Ordanoski</p>
+		<p><strong>Email:</strong> <a href="mailto:vordan@infoproject.biz">vordan@infoproject.biz</a></p>
+		<p><strong>Company:</strong> Infoproject LLC</p>
+		<p><strong>License:</strong> MIT</p>
+		<p><strong>Date:</strong> December 19, 2025</p>
+	</div>
+</body>
+</html>
