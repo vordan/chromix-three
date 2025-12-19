@@ -1,0 +1,14 @@
+[Unit]
+Description=Chromix Three Server
+After=network.target
+
+[Service]
+Type=simple
+User=vanco
+WorkingDirectory=/home/vanco/remote/dev-2-server/4_CHROME_EXTENSIONS/chromix-three/src/server
+ExecStart=/usr/bin/node /home/vanco/remote/dev-2-server/4_CHROME_EXTENSIONS/chromix-three/src/server/chromix-three-server.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
