@@ -2,10 +2,10 @@
 
 Developer tool for controlling Chrome browser from the command line.
 
-Version: 1.1.0  
-Date: December 20, 2025  
-Author: Vanco Ordanoski <vordan@infoproject.biz>  
-Company: Infoproject LLC  
+Version: 1.2.0  
+Date: December 20, 2025
+Author: Vanco Ordanoski <vordan@infoproject.biz>
+Company: Infoproject LLC
 License: MIT
 
 ## Credits
@@ -73,7 +73,7 @@ You can choose between Node.js or Python server. **Both work identically** - pic
 **1. Install Server**
 
 ```bash
-cd chromix-three/src/scripts
+cd chromix-three/src/server-node
 ./install.sh
 ```
 
@@ -94,12 +94,6 @@ The server runs in the background on:
 - WebSocket: localhost:7444
 
 ### Option B: Python Server (Alternative)
-
-**Why choose Python?**
-- No Node.js installation required
-- Python is pre-installed on most Linux systems
-- Smaller installation footprint (~5MB vs ~50MB)
-- Identical functionality to Node.js version
 
 **1. Install Dependencies**
 
@@ -127,14 +121,14 @@ See `src/server-python/README.md` for detailed Python server documentation.
 
 ### Install Chrome Extension (Required for Both Servers)
 
-**Option A: Load Unpacked (Development)**
+**Option A: Load Unpacked**
 
 1. Open `chrome://extensions/`
 2. Enable "Developer mode" (toggle in top-right)
 3. Click "Load unpacked"
 4. Select `chromix-three/src/extension/` folder
 
-**Option B: Install CRX File (Production)**
+**Option B: Install CRX File**
 
 1. Download the .crx file
 2. Open `chrome://extensions/`
@@ -144,7 +138,7 @@ See `src/server-python/README.md` for detailed Python server documentation.
 
 **For Node.js server:**
 ```bash
-cd chromix-three/src/scripts
+cd chromix-three/src/server-node
 ./server-status.sh
 ```
 
@@ -169,7 +163,7 @@ Main use case - reload tabs matching a URL pattern:
 ./chromix-three-reload.sh
 ```
 
-Default pattern: `10.10.*.*` (matches local network development servers)
+Default pattern: `10.10.*.*` (matches VPN network development servers, but do use your own)
 
 ### Manual Commands
 
@@ -256,7 +250,7 @@ curl -X POST http://localhost:8444/api/command \
    ```
    /path/to/chromix-three/src/scripts/chromix-three-reload.sh
    ```
-3. Bind to keyboard shortcut (e.g., Ctrl+F1)
+3. Bind to keyboard shortcut (e.g., Ctrl+F1, I use it because it's convenient)
 
 ### Other Editors
 
@@ -264,12 +258,11 @@ Most editors support executing shell commands. Add the reload script path and bi
 
 ## Helper Scripts
 
-**Node.js server scripts** (in `src/scripts/`):
+**Node.js server scripts** (in `src/server-node/`):
 - `install.sh` - Install Node.js server and dependencies
 - `server-start.sh` - Start Node.js server in background
 - `server-stop.sh` - Stop Node.js server
 - `server-status.sh` - Check Node.js server and extension status
-- `chromix-three-reload.sh` - Reload dev server tabs (main use case, works with both servers)
 - `test-install.sh` - Verify all dependencies are installed
 
 **Python server scripts** (in `src/server-python/`):
@@ -277,18 +270,26 @@ Most editors support executing shell commands. Add the reload script path and bi
 - `server-stop.sh` - Stop Python server
 - `server-status.sh` - Check Python server and extension status
 
-See `src/scripts/README.md` and `src/server-python/README.md` for detailed documentation.
+**Shared scripts** (in `src/scripts/`):
+- `chromix-three-reload.sh` - Reload dev server tabs (works with both servers)
+
+See `src/server-node/README.md`, `src/server-python/README.md`, and `src/scripts/README.md` for detailed documentation.
 
 ## Project Structure
 
 ```
 chromix-three/
 ├── src/
-│   ├── server/                        # Node.js server (default)
-│   │   ├── chromix-three-server.js    # Main server
+│   ├── server-node/                   # Node.js server (default)
+│   │   ├── chromix-three-server.js    # Main Node.js server
 │   │   ├── websocket.js               # WebSocket handler
 │   │   ├── package.json
-│   │   └── package-lock.json
+│   │   ├── package-lock.json
+│   │   ├── install.sh                 # Install Node.js dependencies
+│   │   ├── server-start.sh            # Start Node.js server
+│   │   ├── server-stop.sh             # Stop Node.js server
+│   │   ├── server-status.sh           # Check Node.js server status
+│   │   └── test-install.sh            # Test Node.js installation
 │   ├── server-python/                 # Python server (alternative)
 │   │   ├── chromix-three-server.py    # Main Python server
 │   │   ├── server-start.sh            # Start Python server
@@ -304,13 +305,8 @@ chromix-three/
 │   │       ├── icon-32.png
 │   │       ├── icon-48.png
 │   │       └── chromix-three.128.png
-│   ├── scripts/                       # Helper scripts (Node.js server)
-│   │   ├── install.sh
-│   │   ├── server-start.sh
-│   │   ├── server-stop.sh
-│   │   ├── server-status.sh
-│   │   ├── chromix-three-reload.sh    # Works with both servers
-│   │   ├── test-install.sh
+│   ├── scripts/                       # Shared scripts
+│   │   ├── chromix-three-reload.sh    # Reload tabs (works with both servers)
 │   │   └── README.md
 │   ├── chromix-three.service          # Systemd service file (Node.js)
 │   ├── chromix-three.crx              # Packaged extension (not in git)
@@ -325,7 +321,7 @@ chromix-three/
 
 **Start server:**
 ```bash
-cd chromix-three/src/scripts
+cd chromix-three/src/server-node
 ./server-start.sh
 ```
 
@@ -419,7 +415,7 @@ sudo systemctl start chromix-three-python
 1. Open "Startup Applications" in your system settings
 2. Add new startup program:
    - Name: Chromix Three Server
-   - Command: `/path/to/chromix-three/src/scripts/server-start.sh` (Node.js)
+   - Command: `/path/to/chromix-three/src/server-node/server-start.sh` (Node.js)
    - Or: `/path/to/chromix-three/src/server-python/server-start.sh` (Python)
 
 #### Option 3: Crontab
@@ -431,7 +427,7 @@ crontab -e
 Add one of these lines:
 ```
 # For Node.js server
-@reboot /path/to/chromix-three/src/scripts/server-start.sh
+@reboot /path/to/chromix-three/src/server-node/server-start.sh
 
 # For Python server
 @reboot /path/to/chromix-three/src/server-python/server-start.sh
@@ -443,7 +439,7 @@ Add one of these lines:
 
 **For Node.js server:**
 ```bash
-cd src/scripts
+cd src/server-node
 ./test-install.sh       # Check dependencies
 ./server-stop.sh        # Stop any hung process
 ./server-start.sh       # Start fresh
@@ -472,7 +468,7 @@ cd src/server-python
 ### Port conflicts
 
 If ports 8444 or 7444 are in use, edit:
-- Node.js server: `src/server/chromix-three-server.js` (HTTP_PORT, WS_PORT)
+- Node.js server: `src/server-node/chromix-three-server.js` (HTTP_PORT, WS_PORT)
 - Python server: `src/server-python/chromix-three-server.py` (HTTP_PORT, WS_PORT)
 - Extension: `src/extension/service-worker.js` (WS_PORT)
 
@@ -577,6 +573,6 @@ SOFTWARE.
 
 ## Contact
 
-Vanco Ordanoski  
-Email: vordan@infoproject.biz  
+Vanco Ordanoski
+Email: vordan@infoproject.biz
 Company: Infoproject LLC

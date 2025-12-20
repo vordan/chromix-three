@@ -54,9 +54,9 @@ fi
 
 echo ""
 
-# Get script directory and server directory
+# Get script directory (same as server directory now)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SERVER_DIR="${SCRIPT_DIR}/../server"
+SERVER_DIR="${SCRIPT_DIR}"
 
 # Install server dependencies
 echo "Installing server dependencies..."
@@ -77,18 +77,17 @@ echo ""
 echo "Next steps:"
 echo ""
 echo "1. Start the server:"
-echo "   cd scripts"
 echo "   ./server-start.sh"
 echo ""
 echo "2. Load the Chrome extension:"
 echo "   - Open chrome://extensions/"
 echo "   - Enable 'Developer mode'"
 echo "   - Click 'Load unpacked'"
-echo "   - Select: chromix-three/extension/"
+echo "   - Select: chromix-three/src/extension/"
 echo ""
 echo "3. Test the installation:"
 echo "   ./server-status.sh"
 echo ""
 echo "4. Use in development:"
-echo "   ./chromix-three-reload.sh"
+echo "   ../scripts/chromix-three-reload.sh"
 echo ""

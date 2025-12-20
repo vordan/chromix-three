@@ -21,9 +21,9 @@ if ! command -v node &> /dev/null; then
 	exit 1
 fi
 
-# Get script directory
+# Get script directory (same as server directory now)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SERVER_DIR="${SCRIPT_DIR}/../server"
+SERVER_DIR="${SCRIPT_DIR}"
 SERVER_FILE="${SERVER_DIR}/chromix-three-server.js"
 
 # Check if server file exists
