@@ -18,9 +18,11 @@ Chromix Three allows developers to control Chrome tabs from command-line scripts
 
 The system consists of three components:
 
-1. Node.js server (HTTP + WebSocket)
-2. Chrome extension (Manifest v3 service worker)
-3. Helper scripts for common operations
+1. **Local server** (HTTP + WebSocket) - Available in two implementations:
+   - Node.js version (default)
+   - Python version (alternative, no Node.js required)
+2. **Chrome extension** (Manifest v3 service worker)
+3. **Helper scripts** for common operations
 
 ## Architecture
 
@@ -29,7 +31,8 @@ Command line / Editor
         |
         | (HTTP POST)
         v
-    Node.js Server (localhost:8444, localhost:7444)
+    Local Server (localhost:8444, localhost:7444)
+    [Node.js OR Python implementation]
         |
         | (WebSocket)
         v
@@ -42,16 +45,32 @@ Command line / Editor
 
 The extension maintains a WebSocket connection to the local server. Commands sent via HTTP are forwarded to the extension, which executes the corresponding Chrome API calls and returns results.
 
+**Both server implementations use identical protocols** - the Chrome extension works with either one without any changes.
+
 ## Requirements
 
-- Node.js >= 14.0.0
-- npm
+**Core requirements:**
 - curl
 - Chrome browser
 
+**Server requirements (choose one):**
+
+**Option A: Node.js Server (default)**
+- Node.js >= 14.0.0
+- npm
+
+**Option B: Python Server (alternative)**
+- Python 3.7+
+- pip3
+- Packages: `websockets`, `aiohttp`
+
 ## Installation
 
-### 1. Install Server
+You can choose between Node.js or Python server. **Both work identically** - pick whichever you prefer.
+
+### Option A: Node.js Server (Default)
+
+**1. Install Server**
 
 ```bash
 cd chromix-three/src/scripts
@@ -64,7 +83,7 @@ The install script will:
 - Install server packages
 - Display next steps
 
-### 2. Start Server
+**2. Start Server**
 
 ```bash
 ./server-start.sh
@@ -74,7 +93,39 @@ The server runs in the background on:
 - HTTP API: localhost:8444
 - WebSocket: localhost:7444
 
-### 3. Install Chrome Extension
+### Option B: Python Server (Alternative)
+
+**Why choose Python?**
+- No Node.js installation required
+- Python is pre-installed on most Linux systems
+- Smaller installation footprint (~5MB vs ~50MB)
+- Identical functionality to Node.js version
+
+**1. Install Dependencies**
+
+```bash
+cd chromix-three/src/server-python
+pip3 install websockets aiohttp
+```
+
+**2. Start Server**
+
+```bash
+./server-start.sh
+```
+
+Or run directly:
+```bash
+python3 chromix-three-server.py
+```
+
+The server runs in the background on:
+- HTTP API: localhost:8444
+- WebSocket: localhost:7444
+
+See `src/server-python/README.md` for detailed Python server documentation.
+
+### Install Chrome Extension (Required for Both Servers)
 
 **Option A: Load Unpacked (Development)**
 
@@ -89,13 +140,21 @@ The server runs in the background on:
 2. Open `chrome://extensions/`
 3. Drag and drop the .crx file onto the page
 
-### 4. Verify Installation
+### Verify Installation
 
+**For Node.js server:**
 ```bash
+cd chromix-three/src/scripts
 ./server-status.sh
 ```
 
-Should show:
+**For Python server:**
+```bash
+cd chromix-three/src/server-python
+./server-status.sh
+```
+
+Both should show:
 - Server process: Running
 - HTTP API: Responding
 - Extension: Connected
