@@ -2,8 +2,8 @@
 
 Developer tool for controlling Chrome browser from the command line.
 
-Version: 1.0.1  
-Date: December 19, 2025  
+Version: 1.1.0  
+Date: December 20, 2025  
 Author: Vanco Ordanoski <vordan@infoproject.biz>  
 Company: Infoproject LLC  
 License: MIT
@@ -264,47 +264,64 @@ Most editors support executing shell commands. Add the reload script path and bi
 
 ## Helper Scripts
 
-Located in `chromix-three/src/scripts/`:
-
-- `install.sh` - Install server and dependencies
-- `server-start.sh` - Start server in background
-- `server-stop.sh` - Stop server
-- `server-status.sh` - Check server and extension status
-- `chromix-three-reload.sh` - Reload dev server tabs (main use case)
+**Node.js server scripts** (in `src/scripts/`):
+- `install.sh` - Install Node.js server and dependencies
+- `server-start.sh` - Start Node.js server in background
+- `server-stop.sh` - Stop Node.js server
+- `server-status.sh` - Check Node.js server and extension status
+- `chromix-three-reload.sh` - Reload dev server tabs (main use case, works with both servers)
 - `test-install.sh` - Verify all dependencies are installed
 
-See `scripts/README.md` for detailed documentation.
+**Python server scripts** (in `src/server-python/`):
+- `server-start.sh` - Start Python server in background
+- `server-stop.sh` - Stop Python server
+- `server-status.sh` - Check Python server and extension status
+
+See `src/scripts/README.md` and `src/server-python/README.md` for detailed documentation.
 
 ## Project Structure
 
 ```
 chromix-three/
 ├── src/
-│   ├── server/
+│   ├── server/                        # Node.js server (default)
 │   │   ├── chromix-three-server.js    # Main server
 │   │   ├── websocket.js               # WebSocket handler
-│   │   └── package.json
-│   ├── extension/
+│   │   ├── package.json
+│   │   └── package-lock.json
+│   ├── server-python/                 # Python server (alternative)
+│   │   ├── chromix-three-server.py    # Main Python server
+│   │   ├── server-start.sh            # Start Python server
+│   │   ├── server-stop.sh             # Stop Python server
+│   │   ├── server-status.sh           # Check Python server status
+│   │   └── README.md                  # Python server docs
+│   ├── extension/                     # Chrome extension
 │   │   ├── manifest.json              # Manifest v3
 │   │   ├── service-worker.js          # Background service worker
 │   │   ├── popup.html                 # Extension info popup
 │   │   └── icons/                     # Extension icons
 │   │       ├── icon-16.png
 │   │       ├── icon-32.png
-│   │       └── icon-48.png
-│   └── scripts/
-│       ├── install.sh
-│       ├── server-start.sh
-│       ├── server-stop.sh
-│       ├── server-status.sh
-│       ├── chromix-three-reload.sh
-│       ├── test-install.sh
-│       └── README.md
+│   │       ├── icon-48.png
+│   │       └── chromix-three.128.png
+│   ├── scripts/                       # Helper scripts (Node.js server)
+│   │   ├── install.sh
+│   │   ├── server-start.sh
+│   │   ├── server-stop.sh
+│   │   ├── server-status.sh
+│   │   ├── chromix-three-reload.sh    # Works with both servers
+│   │   ├── test-install.sh
+│   │   └── README.md
+│   ├── chromix-three.service          # Systemd service file (Node.js)
+│   ├── chromix-three.crx              # Packaged extension (not in git)
+│   └── chromix-three.pem              # Extension key (not in git)
 ├── LICENSE
 └── README.md
 ```
 
 ## Server Management
+
+### Node.js Server
 
 **Start server:**
 ```bash
@@ -327,45 +344,43 @@ cd chromix-three/src/scripts
 ./server-stop.sh && ./server-start.sh
 ```
 
+### Python Server
+
+**Start server:**
+```bash
+cd chromix-three/src/server-python
+./server-start.sh
+```
+
+**Stop server:**
+```bash
+./server-stop.sh
+```
+
+**Check status:**
+```bash
+./server-status.sh
+```
+
+**Restart server:**
+```bash
+./server-stop.sh && ./server-start.sh
+```
+
 ### Auto-start on Boot
 
 The server does NOT automatically start on system reboot. You must start it manually or configure it to autostart.
 
-**Option 1: Add to Startup Applications (GUI)**
+#### Option 1: Systemd Service (Recommended)
 
-1. Open "Startup Applications" in your system settings
-2. Add new startup program:
-   - Name: Chromix Three Server
-   - Command: `/path/to/chromix-three/src/scripts/server-start.sh`
+**For Node.js server:**
 
-**Option 2: Add to crontab**
+A systemd service file is provided at `src/chromix-three.service`. Edit it to match your paths:
 
 ```bash
-crontab -e
-```
-
-Add this line:
-```
-@reboot /path/to/chromix-three/src/scripts/server-start.sh
-```
-
-**Option 3: Create systemd service (Advanced)**
-
-Create `/etc/systemd/system/chromix-three.service`:
-```ini
-[Unit]
-Description=Chromix Three Server
-After=network.target
-
-[Service]
-Type=simple
-User=your-username
-WorkingDirectory=/path/to/chromix-three/src/server
-ExecStart=/usr/bin/node /path/to/chromix-three/src/server/chromix-three-server.js
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
+sudo cp src/chromix-three.service /etc/systemd/system/
+sudo nano /etc/systemd/system/chromix-three.service
+# Update User and paths to match your system
 ```
 
 Then enable:
@@ -374,33 +389,94 @@ sudo systemctl enable chromix-three
 sudo systemctl start chromix-three
 ```
 
+**For Python server:**
+
+Create `/etc/systemd/system/chromix-three-python.service`:
+```ini
+[Unit]
+Description=Chromix Three Server (Python)
+After=network.target
+
+[Service]
+Type=simple
+User=your-username
+WorkingDirectory=/path/to/chromix-three/src/server-python
+ExecStart=/usr/bin/python3 /path/to/chromix-three/src/server-python/chromix-three-server.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then enable:
+```bash
+sudo systemctl enable chromix-three-python
+sudo systemctl start chromix-three-python
+```
+
+#### Option 2: Startup Applications (GUI)
+
+1. Open "Startup Applications" in your system settings
+2. Add new startup program:
+   - Name: Chromix Three Server
+   - Command: `/path/to/chromix-three/src/scripts/server-start.sh` (Node.js)
+   - Or: `/path/to/chromix-three/src/server-python/server-start.sh` (Python)
+
+#### Option 3: Crontab
+
+```bash
+crontab -e
+```
+
+Add one of these lines:
+```
+# For Node.js server
+@reboot /path/to/chromix-three/src/scripts/server-start.sh
+
+# For Python server
+@reboot /path/to/chromix-three/src/server-python/server-start.sh
+```
+
 ## Troubleshooting
 
 ### Server won't start
 
+**For Node.js server:**
 ```bash
+cd src/scripts
 ./test-install.sh       # Check dependencies
+./server-stop.sh        # Stop any hung process
+./server-start.sh       # Start fresh
+```
+
+**For Python server:**
+```bash
+cd src/server-python
 ./server-stop.sh        # Stop any hung process
 ./server-start.sh       # Start fresh
 ```
 
 ### Extension not connecting
 
-1. Verify server is running: `./server-status.sh`
+1. Verify server is running: `./server-status.sh` (in respective server directory)
 2. Reload extension in Chrome: `chrome://extensions/` (click reload button)
-3. Check service worker console for errors
+3. Check service worker console for errors (click "service worker" link in extension details)
 
 ### Commands not working
 
 1. Check server status: `./server-status.sh`
 2. Verify URL pattern matches your tabs
 3. Test manually: `curl http://localhost:8444/api/status`
+4. Make sure only ONE server is running (Node.js OR Python, not both)
 
 ### Port conflicts
 
 If ports 8444 or 7444 are in use, edit:
-- Server: `chromix-three/src/server/chromix-three-server.js` (HTTP_PORT, WS_PORT)
-- Extension: `chromix-three/src/extension/service-worker.js` (WS_PORT)
+- Node.js server: `src/server/chromix-three-server.js` (HTTP_PORT, WS_PORT)
+- Python server: `src/server-python/chromix-three-server.py` (HTTP_PORT, WS_PORT)
+- Extension: `src/extension/service-worker.js` (WS_PORT)
+
+**Note:** If you change ports, update them in BOTH the server and extension.
 
 ## Migration from chromix-too
 

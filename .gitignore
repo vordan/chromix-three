@@ -1,9 +1,15 @@
 # Node modules
 node_modules/
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
 # CRX and PEM files (Chrome extension packaging)
 *.crx
 *.pem
+*.zip
 
 # Logs
 *.log
